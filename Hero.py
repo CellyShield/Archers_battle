@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+from skill import skill
 
 walk01 = "./images/hero/walk01.png"
 walk02 = "./images/hero/walk02.png"
@@ -12,6 +13,13 @@ chop05 = "./images/hero/chop05.png"
 chop06 = "./images/hero/chop06.png"
 chop07 = "./images/hero/chop07.png"
 chop08 = "./images/hero/chop08.png"
+skill_01_01 = "./images/skills/skill1_0.png"
+skill_01_02 = "./images/skills/skill1_1.png"
+skill_01_03 = "./images/skills/skill1_2.png"
+skill_01_04 = "./images/skills/skill1_3.png"
+skill_01_05 = "./images/skills/skill1_4.png"
+
+
 class Hero(pygame.sprite.Sprite):
 
     def __init__(self):
@@ -29,8 +37,14 @@ class Hero(pygame.sprite.Sprite):
         chop_6 = pygame.image.load(chop06).convert_alpha()
         chop_7 = pygame.image.load(chop07).convert_alpha()
         chop_8 = pygame.image.load(chop08).convert_alpha()
-        self.walk = [walk_1,walk_2,walk_3]
-        self.skill_1 = [chop_1,chop_2,chop_3,chop_4,chop_5,chop_6,chop_7,chop_8]
+        skill_1_1 = pygame.image.load(skill_01_01).convert_alpha()
+        skill_1_2 = pygame.image.load(skill_01_02).convert_alpha()
+        skill_1_3 = pygame.image.load(skill_01_03).convert_alpha()
+        skill_1_4 = pygame.image.load(skill_01_04).convert_alpha()
+        skill_1_5 = pygame.image.load(skill_01_05).convert_alpha()
+        self.effect_images_01 = [skill_1_1, skill_1_2, skill_1_3, skill_1_4, skill_1_5]
+        self.walk = [walk_1, walk_2, walk_3]
+        self.skill_1 = [chop_1, chop_2, chop_3, chop_4, chop_5, chop_6, chop_7, chop_8]
         self.skill_2 = []
         self.skill_3 = []
         self.speed = 1
@@ -43,9 +57,10 @@ class Hero(pygame.sprite.Sprite):
         self.move_down = False
         self.type = 0
         self.skill1 = False
-    def update(self,current_time, rate):
+
+    def update(self, current_time, rate):
         if current_time > self.last_time + rate:
-            self.frame  += 1
+            self.frame += 1
             if self.type == 0:
                 if self.frame > 2:
                     self.frame = 0
@@ -61,7 +76,8 @@ class Hero(pygame.sprite.Sprite):
             elif self.type == 1:
                 self.image = self.skill_1[self.frame]
             self.old_frame = self.frame
-        # X property
+
+    # X property
     def _getx(self):
         return self.rect.x
 
@@ -85,16 +101,28 @@ class Hero(pygame.sprite.Sprite):
 
     def _setpos(self, pos):
         self.rect.topleft = pos
+
     position = property(_getpos, _setpos)
+
     def moveup(self):
         self.rect.y -= self.speed
+
     def movedown(self):
         self.rect.y += self.speed
 
-    def hurt(self,skill):
-        pass
-
+    def hurt(self, skill_soldier):
+        self.life -= skill_soldier.damage
+        if self.life < 0:
+            self.is_alive = False
 
     def reset(self):
         self.frame = 0
         self.old_frame = -1
+
+    def skill_01(self):
+        skill1 = skill()
+        skill1.set(images=self.effect_images_01, damage=20)
+        skill1.is_alive = True
+        skill1.rect.x = self.rect.x + 5
+        skill1.rect.y = self.rect.y - 60
+        return skill1

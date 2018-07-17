@@ -4,6 +4,9 @@ from Map import Map
 import sys
 from  soldier import Soldier
 from Hero import Hero
+from skill import skill
+from GameFunction import gamefunction
+"""变量设置"""
 
 """变量设置"""
 
@@ -31,10 +34,15 @@ def main():
     bg2 = Map(2000, 0,background02)
     framerate = pygame.time.Clock()
     framerate.tick(30)
+    #游戏函数
+    gamecontroller = gamefunction()
+    #精灵组
     heros = pygame.sprite.Group()
+    hero_effect = pygame.sprite.Group()
+    enemy_effect = pygame.sprite.Group()
     #新建人物
     hero = Hero()
-    soldier = Soldier()
+    soldier = Soldier(screen=screen)
     hero.position = 300,300
     heros.add(hero)
     #主循环
@@ -54,6 +62,7 @@ def main():
                 if event.key == pygame.K_DOWN:
                     hero.move_down = True
                 if event.key == pygame.K_j:
+                    hero_effect.add(hero.skill_01())
                     hero.reset()
                     hero.skill1 = True
             elif event.type == pygame.KEYUP:
@@ -86,11 +95,24 @@ def main():
         if hero.skill1:
             hero.type = 1
             hero.update(ticks,100)
+
+        #精灵组更新判断
+        for effect in hero_effect:
+            if effect.is_alive == True:
+                effect.update(screen,ticks,100)
+            else:
+                hero_effect.remove(effect)
+        # for effect in enemy_effect:
+        #     if effect.is_alive == True:
+        #         effect.update(screen, ticks, 100)
+        #     else:
+        #         enemy_effect.remove(effect)
         bg1.display(screen)
         bg2.display(screen)
         soldier.update(ticks)
         soldier.display(screen)
         heros.draw(screen)
+        hero_effect.draw(screen)
         pygame.display.update()
 
 if __name__ == "__main__":
