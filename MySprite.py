@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 
+
 class MySprite(pygame.sprite.Sprite):
 
     def __init__(self):
@@ -65,7 +66,7 @@ class MySprite(pygame.sprite.Sprite):
 
         # build current frame only if it changed
         if self.frame != self.old_frame:
-            frame_x = (self.frame % self.columns) * self.frame_width
+            frame_x = (self.a % self.columns) * self.frame_width
             frame_y = (self.frame // self.columns) * self.frame_height
             rect = Rect(frame_x, frame_y, self.frame_width, self.frame_height)
             self.image = self.master_image.subsurface(rect)
@@ -76,21 +77,27 @@ class MySprite(pygame.sprite.Sprite):
                "," + str(self.last_frame) + "," + str(self.frame_width) + \
                "," + str(self.frame_height) + "," + str(self.columns) + \
                "," + str(self.rect)
+
+
 class Point(object):
     def __init__(self, x, y):
         self.__x = x
         self.__y = y
 
-    #X property
+    # X property
     def getx(self): return self.__x
+
     def setx(self, x): self.__x = x
+
     x = property(getx, setx)
 
-    #Y property
+    # Y property
     def gety(self): return self.__y
+
     def sety(self, y): self.__y = y
+
     y = property(gety, sety)
 
     def __str__(self):
         return "{X:" + "{:.0f}".format(self.__x) + \
-            ",Y:" + "{:.0f}".format(self.__y) + "}"
+               ",Y:" + "{:.0f}".format(self.__y) + "}"
