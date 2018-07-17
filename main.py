@@ -2,6 +2,7 @@ from pygame import *
 import pygame
 from Map import Map
 import sys
+from Hero import Hero
 """变量设置"""
 
 
@@ -24,21 +25,21 @@ def main():
     #变量设定
     moving_right = False
     moving_left = False
-
-
-
     #游戏对象设置
     pygame.init()
     screen = pygame.display.set_mode((1000,600))
     bg1 = Map(0, 0,background01)
     bg2 = Map(2000, 0,background02)
-    #framerate = pygame.time.Clock()
-    #framerate.tick(40)
+    framerate = pygame.time.Clock()
+    framerate.tick(30)
+    heros = pygame.sprite.Group()
+    #新建人物
+    hero = Hero()
+    hero.position = 300,300
+    heros.add(hero)
     #主循环
     while True:
-
         ticks = pygame.time.get_ticks()
-
         #事件监听
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -48,19 +49,42 @@ def main():
                    moving_right = True
                 if event.key == pygame.K_LEFT:
                    moving_left = True
+                if event.key == pygame.K_UP:
+                   hero.move_up = True
+                if event.key == pygame.K_DOWN:
+                    hero.move_down = True
+                if event.key == pygame.K_j:
+                    hero.reset()
+                    hero.skill1 = True
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT:
                     moving_right = False
                 if event.key == pygame.K_LEFT:
                     moving_left = False
+                if event.key == pygame.K_UP:
+                   hero.move_up = False
+                if event.key == pygame.K_DOWN:
+                    hero.move_down = False
         if moving_right:
             bg1.rolling_right()
             bg2.rolling_right()
+            hero.update(ticks, 100)
         if moving_left:
             bg1.rolling_left()
             bg2.rolling_left()
+            hero.update(ticks, 100)
+        if hero.move_up:
+            hero.moveup()
+            hero.update(ticks,100)
+        if hero.move_down:
+            hero.movedown()
+            hero.update(ticks,100)
+        if hero.skill1:
+            hero.type = 1
+            hero.update(ticks,100)
         bg1.display(screen)
         bg2.display(screen)
+        heros.draw(screen)
         pygame.display.update()
 if __name__ == "__main__":
     main()
